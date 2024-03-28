@@ -1,54 +1,40 @@
-#!/usr/bin/env python3
-
+#!/usr/bin/python3
+"""This script implements Log Parsing in python"""
 import sys
-import signal
 
-# Signal handler to catch Ctrl+C
-def signal_handler(sig, frame):
-    print_stats()
-    sys.exit(0)
 
-# Function to print statistics
-def print_stats():
-    global total_file_size
-    global status_code_count
+status = {'200': 0, '301': 0, '400': 0, '401': 0,
+          '403': 0, '404': 0, '405': 0, '500': 0}
+count = 0
+size = 0
 
-    print(f"File size: {total_file_size}")
 
-    for code in sorted(status_code_count.keys()):
-        print(f"{code}: {status_code_count[code]}")
+def collect_status(dic: dict, size: int) -> None:
+    '''Printing the output'''
+    print("File size: {}".format(size))
+    dic = dict(sorted(dic.items()))
+    for k, v in dic.items():
+        if v > 0:
+            print("{}: {}".format(k, v))
 
-# Initialize variables
-total_file_size = 0
-status_code_count = {}
 
-# Register signal handler for Ctrl+C
-signal.signal(signal.SIGINT, signal_handler)
+if __name__ == "__main__":
 
-# Main loop to read stdin
-line_count = 0
-try:
-    for line in sys.stdin:
-        line_count += 1
+    try:
+        for line in sys.stdin:
+            count += 1
+            lin = line.split(" ")
+            try:
+                code = lin[-2]
+                size += int(lin[-1])
+                if code in status:
+                    status[code] += 1
+            except BaseException:
+                pass
+            if count == 10:
+                collect_status(status, size)
+                count = 0
 
-        parts = line.split()
-        if len(parts) != 7:
-            continue
-
-        ip, date, request, status_code, file_size = parts[0], parts[3][1:], parts[5], parts[6], int(parts[7])
-        if request != "GET /projects/260 HTTP/1.1":
-            continue
-
-        total_file_size += file_size
-
-        status_code = int(status_code)
-        if status_code in (200, 301, 400, 401, 403, 404, 405, 500):
-            status_code_count[status_code] = status_code_count.get(status_code, 0) + 1
-
-        if line_count % 10 == 0:
-            print_stats()
-            line_count = 0
-
-except KeyboardInterrupt:
-    print_stats()
-    sys.exit(0)
+    except KeyboardInterrupt:
+        collect_status(status, size)
+    collect_status(status, size)
