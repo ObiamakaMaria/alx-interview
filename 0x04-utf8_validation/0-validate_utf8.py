@@ -1,26 +1,26 @@
+#!/usr/bin/python3
+'''
+UTF-8 Validation
+'''
+
+
 def validUTF8(data):
-    num_bytes_to_follow = 0
-    
-    for num in data:
-        byte = num & 255  # Extracting the 8 least significant bits
-        
-        if num_bytes_to_follow == 0:
-            # If it's a single-byte character (ASCII)
-            if byte < 128:
+    '''
+    Return: True if data is a valid UTF-8 encoding, else return False
+    '''
+    byt = 0
+    for d in data:
+        m = 1 << 7
+        if not byt:
+            while d & m:
+                byt += 1
+                m >>= 1
+            if not byt:
                 continue
-            # Finding out how many bytes follow
-            elif byte < 224:
-                num_bytes_to_follow = 1
-            elif byte < 240:
-                num_bytes_to_follow = 2
-            elif byte < 248:
-                num_bytes_to_follow = 3
-            else:
+            if byt == 1 or byt > 4:
                 return False
         else:
-            # Checking if the byte follows the pattern '10xxxxxx'
-            if not (byte & 192 == 128):
+            if d >> 6 != 0b10:
                 return False
-            num_bytes_to_follow -= 1
-
-    return num_bytes_to_follow == 0
+        byt -= 1
+    return byt == 0
