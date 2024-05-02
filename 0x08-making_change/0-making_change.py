@@ -12,15 +12,26 @@ def makeChange(coins, total):
         return 0
 
     coins.sort(reverse=True)
+<<<<<<< HEAD
+    min_coins = 0
+    
+=======
     fewest_coins = 0
 
+>>>>>>> 99875fdfe3d1e35d4b197dcf0b05ed8def7c138e
     for coin in coins:
         if total <= 0:
             break
-        fewest_coins += total // coin
+        min_coins += total // coin
         total %= coin
 
     if total != 0:
         return -1
+<<<<<<< HEAD
+    
+    return min_coins
+=======
 
     return fewest_coins
+
+>>>>>>> 99875fdfe3d1e35d4b197dcf0b05ed8def7c138e
