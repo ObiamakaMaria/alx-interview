@@ -1,59 +1,24 @@
 #!/usr/bin/python3
+"""Module for computing the perimeter of an island..
+"""
+
+
 def island_perimeter(grid):
-    '''returns the perimeter of the island described in grid'''
-    counting = 0
-    grid_max = len(grid) - 1  # index of the last list in the grid
-    lst_max = len(grid[0]) - 1  # index of the last square in list
-
-    for lst_idx, lst in enumerate(grid):
-        for land_idx, land in enumerate(lst):
-            if land == 1:
-                # left and right
-                if land_idx == 0:
-                    # left side
-                    counting += 1
-
-                    # right side
-                    if lst[land_idx + 1] == 0:
-                        counting += 1
-                elif land_idx == lst_max:
-                    # left side
-                    if lst[land_idx - 1] == 0:
-                        counting += 1
-
-                    # right side
-                    counting += 1
-                else:
-                    # left side
-                    if lst[land_idx - 1] == 0:
-                        counting += 1
-
-                    # right side
-                    if lst[land_idx + 1] == 0:
-                        counting += 1
-
-                # top and down
-                if lst_idx == 0:
-                    # top side
-                    counting += 1
-
-                    # bottom side
-                    if grid[lst_idx + 1][land_idx] == 0:
-                        counting += 1
-                elif lst_idx == grid_max:
-                    # top side
-                    if grid[lst_idx - 1][land_idx] == 0:
-                        counting += 1
-
-                    # bottom side
-                    counting += 1
-                else:
-                    # top side
-                    if grid[lst_idx - 1][land_idx] == 0:
-                        counting += 1
-
-                    # bottom side
-                    if grid[lst_idx + 1][land_idx] == 0:
-                        counting += 1
-
-    return counting
+    """   Calculate the perimeter of an island without lakes """
+    islandPerimeter = 0
+    if type(grid) != list:
+        return 0
+    n = len(grid)
+    for i, row in enumerate(grid):
+        m = len(row)
+        for j, cell in enumerate(row):
+            if cell == 0:
+                continue
+            edges = (
+                i == 0 or (len(grid[i - 1]) > j and grid[i - 1][j] == 0),
+                j == m - 1 or (m > j + 1 and row[j + 1] == 0),
+                i == n - 1 or (len(grid[i + 1]) > j and grid[i + 1][j] == 0),
+                j == 0 or row[j - 1] == 0,
+            )
+            islandPerimeter += sum(edges)
+    return islandPerimeter
