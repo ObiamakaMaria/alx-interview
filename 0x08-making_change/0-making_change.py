@@ -7,20 +7,16 @@ to achieve a specified total amount using a given set of coin values.
 
 
 def makeChange(coins, total):
-    """Returns the minimum number of coins needed to reach 'total' amount"""
+    """return the fewest coins needed to meet total"""
     if total <= 0:
         return 0
-
     coins.sort(reverse=True)
-    fewest_coins = 0
-
+    min_req = 0
     for coin in coins:
         if total <= 0:
             break
-        fewest_coins += total // coin
+        min_req += total // coin
         total %= coin
-
     if total != 0:
         return -1
-
-    return fewest_coins
+    return min_req
