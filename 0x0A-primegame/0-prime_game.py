@@ -2,6 +2,7 @@
 """Module to determine the winner of a prime number game.
 """
 
+
 def isWinner(x, nums):
     """Determines the winner of a prime number game played over `x` rounds.
     """
